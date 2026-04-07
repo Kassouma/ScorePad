@@ -1,0 +1,16 @@
+# Flutter 3.41.6 + Android SDK — force amd64 so AAPT2 works on Apple Silicon
+FROM --platform=linux/amd64 ghcr.io/cirruslabs/flutter:3.41.6
+
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Get dependencies
+RUN flutter pub get
+
+# Generate launcher icons
+RUN dart run flutter_launcher_icons
+
+# Build release APK
+RUN flutter build apk --release

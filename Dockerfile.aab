@@ -1,0 +1,20 @@
+# Flutter 3.41.6 + Android SDK — force amd64 so AAPT2 works on Apple Silicon
+FROM --platform=linux/amd64 ghcr.io/cirruslabs/flutter:3.41.6
+
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Copy keystore from host (mounted at build time via --secret or volume)
+# The keystore is expected at /keys/scorepad-upload-key.jks inside the container
+# It is mounted via -v ~/keys:/keys in the docker run command below
+
+# Get dependencies
+RUN flutter pub get
+
+# Generate launcher icons
+RUN dart run flutter_launcher_icons
+
+# Build signed release AAB
+RUN flutter build appbundle --release
