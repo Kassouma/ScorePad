@@ -70,33 +70,30 @@ Source file: `assets/icon/icon.png`. Configured via `flutter_launcher_icons` in 
 - Signing config: `android/key.properties` (gitignored) — fill in passwords before building
 - Alias: `scorepad`
 
-## Building the APK
-No Android SDK locally. Build via Docker:
+## Building locally (APK or AAB)
+No Android SDK locally — build via Docker. Keystore mounted at runtime, never baked into the image.
+
 ```bash
-# Build (first run ~7 min, cached runs faster)
-docker build --platform linux/amd64 -f Dockerfile.apk -t scorepad-builder .
-
-# Extract APK to Desktop
-docker run --rm --platform linux/amd64 -v ~/Desktop:/output scorepad-builder \
-  cp build/app/outputs/flutter-apk/app-release.apk /output/ScorePad.apk
-```
-- Must use `--platform linux/amd64` — ARM image lacks Android AAPT2 and gen_snapshot.
-- Output: `build/app/outputs/flutter-apk/app-release.apk`
-
-## Building the signed AAB (Play Store)
-```bash
-# Build
-docker build --platform linux/amd64 -f Dockerfile.aab -t scorepad-aab-builder \
-  --build-arg DUMMY=1 .
-# The keystore is mounted at runtime, not baked into the image
-
+# APK
+docker build --platform linux/amd64 -f Dockerfile.apk -t scorepad-apk-builder .
 docker run --rm --platform linux/amd64 \
   -v ~/keys:/keys \
   -v ~/Desktop:/output \
-  scorepad-aab-builder \
-  sh -c "cp build/app/outputs/bundle/release/app-release.aab /output/ScorePad.aab"
+  -e STORE_PASSWORD="..." \
+  -e KEY_PASSWORD="..." \
+  scorepad-apk-builder
+
+# AAB (for Play Store)
+docker build --platform linux/amd64 -f Dockerfile.aab -t scorepad-aab-builder .
+docker run --rm --platform linux/amd64 \
+  -v ~/keys:/keys \
+  -v ~/Desktop:/output \
+  -e STORE_PASSWORD="..." \
+  -e KEY_PASSWORD="..." \
+  scorepad-aab-builder
 ```
-Output: `~/Desktop/ScorePad.aab` — upload this to Play Console.
+- Must use `--platform linux/amd64` — ARM image lacks Android AAPT2 and gen_snapshot.
+- Entrypoint scripts: `docker-entrypoint-apk.sh` / `docker-entrypoint-aab.sh`
 
 ## Lint / analysis
 ```bash

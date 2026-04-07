@@ -21,29 +21,35 @@ class GameProvider extends ChangeNotifier {
   // ── Init ───────────────────────────────────────────────────────────────────
 
   Future<void> init() async {
-    final players = await _db.loadPlayers();
-    if (players.isEmpty) {
+    try {
+      final players = await _db.loadPlayers();
+      if (players.isEmpty) {
+        setupPlayers = _defaultPlayers();
+        _loading = false;
+        notifyListeners();
+        return;
+      }
+
+      final liveRoundStr = await _db.getMeta('live_round');
+      final currentRoundStr = await _db.getMeta('current_round');
+      final liveRound = int.tryParse(liveRoundStr ?? '0') ?? 0;
+      final currentRound = int.tryParse(currentRoundStr ?? '0') ?? 0;
+
+      final rounds = await _db.loadRounds(players, liveRound);
+
+      _state = GameState(
+        players: players,
+        rounds: rounds,
+        currentRound: currentRound,
+        liveRound: liveRound,
+      );
+    } catch (_) {
+      // DB unreadable — start fresh
       setupPlayers = _defaultPlayers();
+    } finally {
       _loading = false;
       notifyListeners();
-      return;
     }
-
-    final liveRoundStr = await _db.getMeta('live_round');
-    final currentRoundStr = await _db.getMeta('current_round');
-    final liveRound = int.tryParse(liveRoundStr ?? '0') ?? 0;
-    final currentRound = int.tryParse(currentRoundStr ?? '0') ?? 0;
-
-    final rounds = await _db.loadRounds(players, liveRound);
-
-    _state = GameState(
-      players: players,
-      rounds: rounds,
-      currentRound: currentRound,
-      liveRound: liveRound,
-    );
-    _loading = false;
-    notifyListeners();
   }
 
   // ── Setup actions ──────────────────────────────────────────────────────────
