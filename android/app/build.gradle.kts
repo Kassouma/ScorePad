@@ -8,8 +8,11 @@ plugins {
 }
 
 val keyPropertiesFile = rootProject.file("key.properties")
+val hasKeyProperties = keyPropertiesFile.exists()
 val keyProperties = Properties()
-keyProperties.load(FileInputStream(keyPropertiesFile))
+if (hasKeyProperties) {
+    keyProperties.load(FileInputStream(keyPropertiesFile))
+}
 
 android {
     namespace = "com.kassoum.scorepad"
@@ -34,17 +37,23 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keyProperties["keyAlias"] as String
-            keyPassword = keyProperties["keyPassword"] as String
-            storeFile = file(keyProperties["storeFile"] as String)
-            storePassword = keyProperties["storePassword"] as String
+        if (hasKeyProperties) {
+            create("release") {
+                keyAlias = keyProperties["keyAlias"] as String
+                keyPassword = keyProperties["keyPassword"] as String
+                storeFile = file(keyProperties["storeFile"] as String)
+                storePassword = keyProperties["storePassword"] as String
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (hasKeyProperties) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
