@@ -6,15 +6,11 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Copy keystore from host (mounted at build time via --secret or volume)
-# The keystore is expected at /keys/scorepad-upload-key.jks inside the container
-# It is mounted via -v ~/keys:/keys in the docker run command below
+# Get dependencies & generate icons
+RUN flutter pub get && dart run flutter_launcher_icons
 
-# Get dependencies
-RUN flutter pub get
-
-# Generate launcher icons
-RUN dart run flutter_launcher_icons
-
-# Build signed release AAB
-RUN flutter build appbundle --release
+# Build at container run time so the keystore volume is available
+# Usage: docker run --rm -v ~/keys:/keys -v ~/Desktop:/output scorepad-aab-builder
+COPY docker-entrypoint-aab.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

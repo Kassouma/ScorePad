@@ -35,7 +35,8 @@ class _RootState extends State<_Root> {
   bool _navigatedToGame = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -43,7 +44,10 @@ class _RootState extends State<_Root> {
       systemNavigationBarColor: AppColors.bg,
       systemNavigationBarIconBrightness: Brightness.light,
     ));
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final loading = context.select<GameProvider, bool>((p) => p.loading);
     final hasGame = context.select<GameProvider, bool>((p) => p.state != null);
 
@@ -56,7 +60,6 @@ class _RootState extends State<_Root> {
       );
     }
 
-    // Resume a persisted game on first load
     if (hasGame && !_navigatedToGame) {
       _navigatedToGame = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
