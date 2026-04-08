@@ -66,8 +66,8 @@ class GameScreen extends StatelessWidget {
                       _IconBtn(
                         icon: '⊞',
                         onTap: () async {
+                          Navigator.of(context).pop();
                           await provider.backToSetup();
-                          if (context.mounted) Navigator.of(context).pop();
                         },
                       ),
                     ],
