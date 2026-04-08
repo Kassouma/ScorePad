@@ -28,7 +28,7 @@ class GameScreen extends StatelessWidget {
             final isLive = state.isViewingLive;
             final roundScores = state.rounds[state.currentRound];
             final totals = state.totals;
-            final maxTotal = state.maxTotal;
+            final maxTotal = totals.isEmpty ? 0 : totals.reduce((a, b) => a > b ? a : b);
 
             return Column(
               children: [
@@ -65,9 +65,9 @@ class GameScreen extends StatelessWidget {
                       const SizedBox(width: 8),
                       _IconBtn(
                         icon: '⊞',
-                        onTap: () {
-                          provider.backToSetup();
-                          Navigator.of(context).pop();
+                        onTap: () async {
+                          await provider.backToSetup();
+                          if (context.mounted) Navigator.of(context).pop();
                         },
                       ),
                     ],
