@@ -32,7 +32,7 @@ class _Root extends StatefulWidget {
 }
 
 class _RootState extends State<_Root> {
-  bool _navigatedToGame = false;
+  bool _resumeHandled = false;
 
   @override
   void initState() {
@@ -60,15 +60,19 @@ class _RootState extends State<_Root> {
       );
     }
 
-    if (hasGame && !_navigatedToGame) {
-      _navigatedToGame = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const GameScreen()),
-          );
-        }
-      });
+    // Auto-navigate only once: when initial load completes with a persisted game.
+    // Never react to hasGame changing afterwards (e.g. after startGame()).
+    if (!_resumeHandled) {
+      _resumeHandled = true;
+      if (hasGame) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const GameScreen()),
+            );
+          }
+        });
+      }
     }
 
     return const SetupScreen();

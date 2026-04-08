@@ -194,9 +194,10 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void backToSetup() {
+  Future<void> backToSetup() async {
     setupPlayers = List.from(_state?.players ?? _defaultPlayers());
     _state = null;
+    await _db.clearAll();
     notifyListeners();
   }
 

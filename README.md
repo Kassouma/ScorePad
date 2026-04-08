@@ -39,4 +39,4 @@ If you find the app useful, you can [buy me a coffee ☕](https://buymeacoffee.c
 
 ## License
 
-MIT
+None

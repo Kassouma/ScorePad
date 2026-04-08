@@ -16,11 +16,10 @@ class GameState {
 
   bool get isViewingLive => currentRound == liveRound;
 
-  List<int> get totals {
-    return List.generate(players.length, (i) {
-      return rounds.fold(0, (sum, r) => sum + (r[i] ?? 0));
-    });
-  }
+  List<int> get totals => List.generate(
+        players.length,
+        (i) => rounds.fold(0, (sum, r) => sum + (r[i] ?? 0)),
+      );
 
   int get maxTotal {
     final t = totals;
