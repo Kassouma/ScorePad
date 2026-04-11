@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import '../models/game_state.dart';
 import '../providers/game_provider.dart';
 import '../theme/app_theme.dart';
-import '../widgets/coffee_button.dart';
 import '../widgets/player_score_card.dart';
 import '../widgets/reset_bottom_sheet.dart';
 import '../widgets/score_bottom_sheet.dart';
+import 'game_summary_screen.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -60,6 +60,16 @@ class GameScreen extends StatelessWidget {
                           if (confirmed && context.mounted) {
                             await provider.resetScores();
                           }
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      // End game → summary screen
+                      _IconBtn(
+                        icon: '⚑',
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => GameSummaryScreen(state: state),
+                          ));
                         },
                       ),
                       const SizedBox(width: 8),
@@ -177,8 +187,6 @@ class GameScreen extends StatelessWidget {
                   ),
                 ),
 
-                // ── Coffee button ─────────────────────────────────────────
-                const CoffeeButton(),
               ],
             );
           },
