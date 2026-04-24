@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/game_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/coffee_button.dart';
 import '../widgets/player_setup_row.dart';
 import 'game_screen.dart';
 
@@ -117,6 +118,8 @@ class SetupScreen extends StatelessWidget {
                       }
                     },
                   ),
+                  const SizedBox(height: 12),
+                  const CoffeeButton(),
                 ],
               ),
             );

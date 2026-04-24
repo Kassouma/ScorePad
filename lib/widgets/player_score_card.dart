@@ -40,117 +40,107 @@ class PlayerScoreCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isLeader ? AppColors.accent : AppColors.border,
+          color: AppColors.border,
           width: 1.5,
         ),
       ),
-      child: Stack(
-        children: [
-          if (isLeader)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 2,
-                decoration: BoxDecoration(
-                  color: AppColors.accent,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Row(
+          children: [
+            // Color bar
+            Container(
+              width: 4,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-            child: Row(
-              children: [
-                // Color bar
-                Container(
-                  width: 4,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                // Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(width: 14),
+            // Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        name,
-                        style: GoogleFonts.syne(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: AppColors.textPrimary,
+                      // Crown icon shown only for the leader
+                      if (isLeader) ...[
+                        const Text('👑', style: TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                      ],
+                      Flexible(
+                        child: Text(
+                          name,
+                          style: GoogleFonts.syne(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: AppColors.textPrimary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Text(
-                            'R$roundNumber : ',
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 13,
-                              color: AppColors.textMuted,
-                            ),
-                          ),
-                          Text(
-                            _formatScore(roundScore),
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Total : ',
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 13,
-                              color: AppColors.textMuted,
-                            ),
-                          ),
-                          Text(
-                            '$total',
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: isLeader
-                                  ? AppColors.accent
-                                  : AppColors.textPrimary,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 8),
-                // Score buttons
-                _ScoreButton(
-                  label: '−',
-                  color: AppColors.danger,
-                  bgColor: const Color(0x26FF4747),
-                  enabled: !isReadOnly,
-                  onTap: onMinus,
-                ),
-                const SizedBox(width: 8),
-                _ScoreButton(
-                  label: '+',
-                  color: AppColors.accent,
-                  bgColor: const Color(0x26E8FF47),
-                  enabled: !isReadOnly,
-                  onTap: onPlus,
-                ),
-              ],
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      Text(
+                        'R$roundNumber : ',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 13,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                      Text(
+                        _formatScore(roundScore),
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Total : ',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 13,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                      Text(
+                        '$total',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            // Score buttons
+            _ScoreButton(
+              label: '−',
+              color: AppColors.danger,
+              bgColor: const Color(0x26FF4747),
+              enabled: !isReadOnly,
+              onTap: onMinus,
+            ),
+            const SizedBox(width: 8),
+            _ScoreButton(
+              label: '+',
+              color: AppColors.accent,
+              bgColor: const Color(0x26E8FF47),
+              enabled: !isReadOnly,
+              onTap: onPlus,
+            ),
+          ],
+        ),
       ),
     );
   }
